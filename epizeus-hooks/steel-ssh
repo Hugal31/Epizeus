@@ -1,0 +1,26 @@
+#!/bin/bash
+# Récupère les clefs ssh de l'utilisateur
+
+MODE_FRIENDLY=1
+MODE_EVIL=2
+MODE=$MODE_FRIENDLY
+OUTPUT_DIR='.'
+SSH_DIR=$HOME/.ssh
+
+while [ ! -z $1 ]; do
+    case $1 in
+	-e|--evil)
+	    MODE=$MODE_EVIL
+	    ;;
+	*)
+	    OUTPUT_DIR=$1
+	    ;;
+    esac
+    shift
+done;
+
+if [ $MODE = $MODE_FRIENDLY ]; then
+    cp `find $SSH_DIR -iname '*.pub'` $OUTPUT_DIR
+else
+    cp `find $SSH_DIR ! -name config` $OUTPUT_DIR
+fi

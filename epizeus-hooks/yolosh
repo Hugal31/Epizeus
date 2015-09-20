@@ -1,0 +1,28 @@
+#!/bin/bash
+
+SHELLRC="$HOME/.bashrc"
+
+usage()
+{
+    cat <<EOF
+usage:
+$0 -s
+EOF
+    exit
+}
+
+if [ $# = 0 ]; then
+    usage
+fi
+
+while [ ! -z $1 ]; do
+    case $1 in
+	-s|--secret-prompt)
+	    cat  >> $SHELLRC <<EOF
+COUCOU='Apprends à locker ton ordinateur'
+PS1=\$PS1'\${COUCOU:0:\$((\# - 1))} '
+EOF
+	;;
+    esac
+    shift
+done

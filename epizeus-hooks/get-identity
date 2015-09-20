@@ -1,0 +1,52 @@
+#!/bin/bash
+
+CP_OPTIONS='-n'
+OUTPUT_FILE=''
+OUTPUT_DIR=''
+PASSWD_LOCATION='/etc/passwd'
+GET_PASSWD=0
+
+usage()
+{
+    cat <<EOF
+$0 -d DIR -f FILE [-p|--passwd] [-h]
+-p, --passwd	Récupère le fichier /etc/passwd de l'utilisateur
+EOF
+    exit
+}
+
+while [ ! -z $1 ]; do
+    case $1 in
+	-d|--output-dir)
+	    shift
+	    OUTPUT_DIR=$1
+	    ;;
+	-f|--output-file)
+	    shift
+	    OUTPUT_FILE=$1
+	    ;;
+	-p|--passwd)
+	    GET_PASSWD=1
+	    ;;
+	-h|--help)
+	    usage
+	    ;;
+	*)
+	    ;;
+    esac
+    shift
+done
+
+if [ $GET_PASSWD = 1 ]; then
+    if [ ! -z $OUTPUT_DIR ]; then
+	cp $CP_OPTIONS $PASSWD_LOCATION $OUTPUT_DIR
+    else
+	usage
+    fi
+fi
+
+if [ ! -z $OUTPUT_FILE ]; then
+    printf "`date -R` $HOST $USER\n" >> $OUTPUT_FILE
+else
+    usage
+fi

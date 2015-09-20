@@ -3,16 +3,17 @@
 BASEDIR=$(dirname $0)
 HOOK_DIR='epizeus-hooks'
 CONFIG_FILE='epizeus.conf'
+OUTPUT_DIR="$BASEDIR/epizeus.out"
 
 while read line; do
     case $line in
-	!*)
-	    eval ${line:1}
-	    ;;
 	\.*)
 	    eval $BASEDIR/$HOOK_DIR/${line:1}
 	    ;;
 	\#*)
+	    ;;
+	!*|*)
+	    eval ${line:1}
 	    ;;
     esac
 done < $BASEDIR/$CONFIG_FILE;

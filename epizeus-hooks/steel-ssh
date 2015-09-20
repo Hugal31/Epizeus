@@ -6,7 +6,7 @@ MODE_EVIL=2
 MODE=$MODE_FRIENDLY
 OUTPUT_DIR='.'
 SSH_USER_DIR=$HOME/.ssh
-SSH_SYSTEM_DIR=$HOME/.ssh
+SSH_SYSTEM_DIR=/etc/ssh
 CP_OPTIONS='-n' #Pour ne pas accidentellement écraser des clefs
 
 STEEL_SYSTEM=0
@@ -17,6 +17,7 @@ usage ()
     cat <<EOF
 $0 [-s|--system]|[-u|--user] OUTPUT_DIR
 EOF
+    exit
 }
 
 steel_keys ()
@@ -51,13 +52,13 @@ while [ ! -z $1 ]; do
     shift
 done;
 
-if [ ! STEEL_USER = 1 ] && [ ! STEEL_SYSTEM = 1 ]; then
+if [ $STEEL_USER = 0 ] && [ $STEEL_SYSTEM = 0 ]; then
     usage
-else
-    if [ STEEL_USER = 1 ]; then
-	steel_keys $SSH_USER_DIR
-    fi
-    if [ STEEL_SYSTEM = 1 ]; then
-	steel_keys $SSH_SYSTEM_DIR
-    fi
+fi
+
+if [ $STEEL_USER = 1 ]; then
+    steel_keys $SSH_USER_DIR
+fi
+if [ $STEEL_SYSTEM = 1 ]; then
+    steel_keys $SSH_SYSTEM_DIR
 fi

@@ -5,12 +5,44 @@ MODE_FRIENDLY=1
 MODE_EVIL=2
 MODE=$MODE_FRIENDLY
 OUTPUT_DIR='.'
-SSH_DIR=$HOME/.ssh
+SSH_USER_DIR=$HOME/.ssh
+SSH_SYSTEM_DIR=$HOME/.ssh
+CP_OPTIONS='-n' #Pour ne pas accidentellement écraser des clefs
+
+STEEL_SYSTEM=0
+STEEL_USER=0
+
+usage ()
+{
+    cat <<EOF
+$0 [-s|--system]|[-u|--user] OUTPUT_DIR
+EOF
+}
+
+steel_keys ()
+{
+    if [ ! -z $1 ]; then
+	if [ $MODE = $MODE_FRIENDLY ]; then
+	    cp $CP_OPTIONS `find $1 -iname '*.pub'` $OUTPUT_DIR
+	else
+	    cp $CP_OPTIONS `find $1 ! -name '*config*'` $OUTPUT_DIR
+	fi
+    fi
+}
 
 while [ ! -z $1 ]; do
     case $1 in
 	-e|--evil)
 	    MODE=$MODE_EVIL
+	    ;;
+	-f|--friendly) #This is default
+	    MODE=$MODE_FRIENDLY
+	    ;;
+	-s|--system)
+	    STEEL_SYSTEM=1
+	    ;;
+	-u|--user)
+	    STEEL_USER=1
 	    ;;
 	*)
 	    OUTPUT_DIR=$1
@@ -19,8 +51,13 @@ while [ ! -z $1 ]; do
     shift
 done;
 
-if [ $MODE = $MODE_FRIENDLY ]; then
-    cp `find $SSH_DIR -iname '*.pub'` $OUTPUT_DIR
+if [ ! STEEL_USER = 1 ] && [ ! STEEL_SYSTEM = 1 ]; then
+    usage
 else
-    cp `find $SSH_DIR ! -name config` $OUTPUT_DIR
+    if [ STEEL_USER = 1 ]; then
+	steel_keys $SSH_USER_DIR
+    fi
+    if [ STEEL_SYSTEM = 1 ]; then
+	steel_keys $SSH_SYSTEM_DIR
+    fi
 fi

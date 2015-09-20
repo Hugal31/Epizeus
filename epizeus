@@ -5,7 +5,7 @@ HOOK_DIR='epizeus-hooks'
 CONFIG_FILE='epizeus.conf'
 OUTPUT_DIR="$BASEDIR/epizeus.out/$USER"
 
-mkdir $OUTPUT_DIR
+mkdir -p $OUTPUT_DIR
 
 while read line; do
     case $line in

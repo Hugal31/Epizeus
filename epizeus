@@ -2,24 +2,49 @@
 
 BASEDIR=$(dirname $0)
 HOOK_DIR='epizeus-hooks'
-CONFIG_FILE='epizeus.conf'
 OUTPUT_DIR="$BASEDIR/epizeus.out/$USER"
 LOG_FILE="$BASEDIR/epizeus.out/epizeus.log"
 USER_LOG_FILE="$OUTPUT_DIR/epizeus.log"
+INPUT_FILE=''
 
 mkdir -p $OUTPUT_DIR
 touch $LOG_FILE
 touch $USER_LOG_FILE
 
-while read line; do
-    case $line in
+interpret_line ()
+{
+    case $1 in
+	'exit')
+	    exit
+	    ;;
 	\.*)
-	    eval $BASEDIR/$HOOK_DIR/${line:1}
+	    eval $BASEDIR/$HOOK_DIR/${1:1}
 	    ;;
 	\#*)
 	    ;;
-	!*|*)
-	    eval ${line:1}
+	!*)
+	    eval ${1:1}
+	    ;;
+	*)
+	    eval ${1}
 	    ;;
     esac
-done < $BASEDIR/$CONFIG_FILE;
+}
+
+while [ ! -z $1 ]; do
+    case $1 in
+	*)
+	    INPUT_FILE=$1
+    esac
+    shift
+done
+
+if [ ! -z $INPUT_FILE ]; then
+    while read line; do
+	interpret_line "$line"
+    done < $INPUT_FILE
+else
+    while read line; do
+	interpret_line "$line"
+    done
+fi

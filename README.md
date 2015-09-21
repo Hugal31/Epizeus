@@ -1,4 +1,4 @@
 EpiZeus
 =======
 
-Cheval de troie pour ceux qui ne lock pas leur PC à Epitech
+Cheval de Troie très basique pour ceux qui ne lock pas leur PC à Epitech
